@@ -1,0 +1,61 @@
+type Apyranke
+  @model(subscriptions: null) # bbz kas cia TODO
+  @auth (
+    rules: [
+    { allow: groups, groups: ["Admin"] } # Allow admins to CRUD (create, read, update, delete)
+    { allow: private, operations: [read] } # Allow signed-in guests to read
+    { allow: public, operations: [read] } # Allow non-signed in guests to read
+  ]
+  ) 
+  {
+  id: ID!
+  title: String!
+  description: String
+  image: String
+  price: Float
+}
+
+# type Order
+#   @model(subscriptions: null) # bbz kas cia TODO
+#   @auth (
+#     rules: [
+#       { allow: groups, groups: ["Admin"] } # Allow admins to CRUD all orders
+#       { allow: owner, identityClaim: "email", ownerField: "customer"} 
+#     ]
+#   )
+#   @key(name: "byUser", fields: ["user"])  # Allow queries by userName
+#   {
+#   id: ID!
+#   user: String
+#   date: String
+#   total: Float
+#   apyrankes: @connection[] TODO 
+#   }
+
+
+enum OrderStatus {
+  SUCCESS
+  FAIL
+}
+
+input CartItem {
+  id: ID!
+  title: String
+  image: String
+  price: Float
+  amount: Int
+}
+
+input ProcessOrderInput {
+  id: ID!
+  cart: [CartItem]
+  total: Float!
+  token: String!
+  address: String
+}
+
+type CheckoutProcess {
+  processOrder(input: ProcessOrderInput!): OrderStatus
+    @function(name: "paymentProcessor-${env}")
+    @function(name: "orderCreator-${env}")
+}

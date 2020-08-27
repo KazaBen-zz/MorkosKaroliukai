@@ -1,0 +1,11 @@
+{
+    "AppSyncApiName": "karoliukaiAPI",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authnew126cdc54",
+            "Outputs.UserPoolId"
+        ]
+    }
+}
